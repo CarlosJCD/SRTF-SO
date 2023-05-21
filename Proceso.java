@@ -1,4 +1,5 @@
 public class Proceso implements Comparable<Proceso> {
+    
     private String id;
     private int llegada;
     private int rafaga;

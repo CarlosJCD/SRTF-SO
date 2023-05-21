@@ -181,6 +181,7 @@ public class SistemaOperativo {
     }
 
     public static void main(String[] args) {
+        GUI gui = new GUI();
         SistemaOperativo SO = new SistemaOperativo(0.2);
         while (SO.srtfPasoN()) {
         }
