@@ -2,16 +2,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SistemaOperativo {
+    
     private RAM ram;
     private CPU cpu;
     private List<Proceso> procesosAEjecutar;
     private List<Proceso> procesosFinalizados;
-    private int tiempo;
+    public int tiempo;
     private double cambioDeContexto;
     private int contadorCambiosDeContexto;
     private double TTP;
     private double TEP;
-    private double procentajePromedio;
+    private double porcentajePromedio;
 
     public SistemaOperativo(double cambioDeContexto) {
         this.cambioDeContexto = cambioDeContexto;
@@ -153,7 +154,7 @@ public class SistemaOperativo {
     public void calcularAnaliticas() {
         TTP = tiempo + (contadorCambiosDeContexto * cambioDeContexto);
         TEP = calcularTEP();
-        procentajePromedio = (double) Math.round((TEP / TTP) * 10000) / 100;
+        porcentajePromedio = (double) Math.round((TEP / TTP) * 10000) / 100;
     }
 
     private double calcularTEP() {
@@ -172,8 +173,8 @@ public class SistemaOperativo {
         return TEP;
     }
 
-    public double getProcentajePromedio() {
-        return procentajePromedio;
+    public double getPorcentajePromedio() {
+        return porcentajePromedio;
     }
 
     public List<Proceso> getProcesosFinalizados() {
@@ -181,18 +182,20 @@ public class SistemaOperativo {
     }
 
     public static void main(String[] args) {
+        
         SistemaOperativo SO = new SistemaOperativo(0.2);
-        while (SO.srtfPasoN()) {
-        }
-        SO.calcularAnaliticas();
+        GUI gui = new GUI(SO);
+        
         for (Proceso proceso : SO.procesosFinalizados) {
             System.out.println("Nombre: " + proceso.getId() + " Tiempo de espera:" + proceso.getTiempoDeEspera());
         }
+
         System.out.println("TTP: " + SO.TTP);
         System.out.println("TEP: " + SO.TEP);
-        System.out.println("TEP/TTP %: " + SO.procentajePromedio);
+        System.out.println("TEP/TTP %: " + SO.porcentajePromedio);
     }
 }
+
 /*
  * 1.- tiempo de espera para todos los procesos listos en la cola de espera
  * 
