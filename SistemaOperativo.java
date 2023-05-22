@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SistemaOperativo {
-    
+
     private RAM ram;
     private CPU cpu;
     private List<Proceso> procesosAEjecutar;
     private List<Proceso> procesosFinalizados;
-    public int tiempo;
+    private int tiempo;
     private double cambioDeContexto;
     private int contadorCambiosDeContexto;
     private double TTP;
@@ -154,7 +154,7 @@ public class SistemaOperativo {
     public void calcularAnaliticas() {
         TTP = tiempo + (contadorCambiosDeContexto * cambioDeContexto);
         TEP = calcularTEP();
-        porcentajePromedio = (double) Math.round((TEP / TTP) * 10000) / 100;
+        porcentajePromedio = Math.floor((TEP / TTP) * 10000) / 100;
     }
 
     private double calcularTEP() {
@@ -162,7 +162,7 @@ public class SistemaOperativo {
         for (Proceso proceso : procesosFinalizados) {
             TEP += proceso.getTiempoDeEspera();
         }
-        return TEP / procesosFinalizados.size();
+        return Math.floor((TEP / procesosFinalizados.size()) * 100) / 100;
     }
 
     public double getTTP() {
@@ -177,21 +177,24 @@ public class SistemaOperativo {
         return porcentajePromedio;
     }
 
+    public int getTiempo() {
+        return tiempo;
+    }
+
     public List<Proceso> getProcesosFinalizados() {
         return procesosFinalizados;
     }
 
     public static void main(String[] args) {
-        
+
         SistemaOperativo SO = new SistemaOperativo(0.2);
         GUI gui = new GUI(SO);
-        
         for (Proceso proceso : SO.procesosFinalizados) {
             System.out.println("Nombre: " + proceso.getId() + " Tiempo de espera:" + proceso.getTiempoDeEspera());
         }
-
+        SO.calcularAnaliticas();
         System.out.println("TTP: " + SO.TTP);
-        System.out.println("TEP: " + SO.TEP);
+        System.out.println("TEP: " + Double.toString(SO.TEP));
         System.out.println("TEP/TTP %: " + SO.porcentajePromedio);
     }
 }
