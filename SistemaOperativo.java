@@ -184,19 +184,6 @@ public class SistemaOperativo {
     public List<Proceso> getProcesosFinalizados() {
         return procesosFinalizados;
     }
-
-    public static void main(String[] args) {
-
-        SistemaOperativo SO = new SistemaOperativo(0.2);
-        GUI gui = new GUI(SO);
-        for (Proceso proceso : SO.procesosFinalizados) {
-            System.out.println("Nombre: " + proceso.getId() + " Tiempo de espera:" + proceso.getTiempoDeEspera());
-        }
-        SO.calcularAnaliticas();
-        System.out.println("TTP: " + SO.TTP);
-        System.out.println("TEP: " + Double.toString(SO.TEP));
-        System.out.println("TEP/TTP %: " + SO.porcentajePromedio);
-    }
 }
 
 /*

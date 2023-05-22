@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +12,9 @@ public class GUI implements ActionListener {
     DrawingPanel panel;
     JFrame frame;
     ImageIcon imagenTablaProcesos;
-    int frameWidth = 500;
+    int frameWidth = 800;
     int frameHeight = 700;
+    int rectangleWidth = 30;
     JLabel labelTitulo;
     JLabel imagen;
     JLabel labelDiagramaGannt;
@@ -42,14 +46,14 @@ public class GUI implements ActionListener {
         // Añadimos el apartado de bienvenida
 
         labelTitulo = new JLabel("Administración Del Procesador Utilizando El Algoritmo SRTF");
-        labelTitulo.setBounds(frameWidth / 8, frameHeight / 20, 500, 50);
+        labelTitulo.setBounds(200, frameHeight / 20, 500, 50);
         panel.add(labelTitulo);
 
         // Añadimos la imagen de los procesos
 
         imagenTablaProcesos = new ImageIcon(getClass().getResource("TablaProcesosSOProyectoFinal.png"));
         imagen = new JLabel(imagenTablaProcesos);
-        imagen.setBounds(35, 50, 410, 300);
+        imagen.setBounds(200, 50, 410, 300);
         panel.add(imagen);
 
         // Añadimos el apartado que indica que sigue el diagrama de Gannt
@@ -58,16 +62,10 @@ public class GUI implements ActionListener {
         labelDiagramaGannt.setBounds(50, 300, 500, 50);
         panel.add(labelDiagramaGannt);
 
-        // Añadimos el label que nos indicará el paso que estamos haciendo
-
-        labelPaso = new JLabel("Paso 0");
-        labelPaso.setBounds(50, 415, 500, 50);
-        panel.add(labelPaso);
-
         // Añadimos el botón para ir mostrando cómo se va rellenando el diagrama de
         // Gannt
 
-        botonPaso = new JButton("Siguiente");
+        botonPaso = new JButton("Paso n");
         botonPaso.setBounds(350, 430, 90, 25);
         botonPaso.addActionListener(this);
         panel.add(botonPaso);
@@ -80,32 +78,32 @@ public class GUI implements ActionListener {
         panel.add(proceso1);
 
         proceso1_2 = new JLabel();
-        proceso1_2.setBounds(50 + 16 * 9, 350, 50, 50);
+        proceso1_2.setBounds(50 + rectangleWidth * 9, 350, 50, 50);
         proceso1_2.setForeground(Color.WHITE);
         panel.add(proceso1_2);
 
         proceso1_3 = new JLabel();
-        proceso1_3.setBounds(50 + 16 * 13, 350, 50, 50);
+        proceso1_3.setBounds(50 + rectangleWidth * 13, 350, 50, 50);
         proceso1_3.setForeground(Color.WHITE);
         panel.add(proceso1_3);
 
         proceso2 = new JLabel();
-        proceso2.setBounds(50 + 16 * 3, 350, 50, 50);
+        proceso2.setBounds(50 + rectangleWidth * 3, 350, 50, 50);
         proceso2.setForeground(Color.WHITE);
         panel.add(proceso2);
 
         proceso3 = new JLabel();
-        proceso3.setBounds(50 + 16 * 7, 350, 50, 50);
+        proceso3.setBounds(50 + rectangleWidth * 7, 350, 50, 50);
         proceso3.setForeground(Color.WHITE);
         panel.add(proceso3);
 
         proceso4 = new JLabel();
-        proceso4.setBounds(50 + 16 * 10, 350, 50, 50);
+        proceso4.setBounds(50 + rectangleWidth * 10, 350, 50, 50);
         proceso4.setForeground(Color.WHITE);
         panel.add(proceso4);
 
         proceso5 = new JLabel();
-        proceso5.setBounds(50 + 16 * 17, 350, 50, 50);
+        proceso5.setBounds(50 + rectangleWidth * 17, 350, 50, 50);
         proceso5.setForeground(Color.WHITE);
         panel.add(proceso5);
         frame.setVisible(true);
@@ -148,9 +146,15 @@ public class GUI implements ActionListener {
         for (int i = 0; i <= panel.counter; i++) {
             JLabel tiempo = new JLabel();
             tiempo.setText(Integer.toString(i));
-            tiempo.setBounds(50 + 16 * i, 390, 50, 50);
+            tiempo.setBounds(50 + rectangleWidth * i, 390, 100, 50);
             panel.add(tiempo);
-            labelPaso.setText("Paso: " + Integer.toString(i));
+            botonPaso.setText("Paso " + Integer.toString(i));
+        }
+        if (so.getTiempo() == 23) {
+            JLabel tiempo = new JLabel();
+            tiempo.setText("24");
+            tiempo.setBounds(50 + rectangleWidth * 24, 390, 100, 50);
+            panel.add(tiempo);
         }
 
     }
@@ -160,22 +164,64 @@ public class GUI implements ActionListener {
 
         so.calcularAnaliticas();
 
+        JLabel tiempoDeEsperaTitulo = new JLabel("Tiempos de espera por proceso:");
+        tiempoDeEsperaTitulo.setBounds(275, 450, 250, 50);
+        panel.add(tiempoDeEsperaTitulo);
+
+        for (Proceso proceso : so.getProcesosFinalizados()) {
+            switch (proceso.getId()) {
+                case "P1":
+                    JLabel p1Label = new JLabel();
+                    p1Label.setBounds(150, 480, 100, 50);
+                    panel.add(p1Label);
+                    p1Label.setText("P1 = " + proceso.getTiempoDeEspera());
+                    break;
+                case "P2":
+                    JLabel p2Label = new JLabel();
+                    p2Label.setBounds(150 + 100, 480, 100, 50);
+                    panel.add(p2Label);
+                    p2Label.setText("P2 = " + proceso.getTiempoDeEspera());
+                    break;
+                case "P3":
+                    JLabel p3Label = new JLabel();
+                    p3Label.setBounds(150 + 200, 480, 100, 50);
+                    panel.add(p3Label);
+                    p3Label.setText("P3 = " + proceso.getTiempoDeEspera());
+                    break;
+                case "P4":
+                    JLabel p4Label = new JLabel();
+                    p4Label.setBounds(150 + 300, 480, 100, 50);
+                    panel.add(p4Label);
+                    p4Label.setText("P4 = " + proceso.getTiempoDeEspera());
+                    break;
+                case "P5":
+                    JLabel p5Label = new JLabel();
+                    p5Label.setBounds(150 + 400, 480, 100, 50);
+                    panel.add(p5Label);
+                    p5Label.setText("P5 = " + proceso.getTiempoDeEspera());
+                    break;
+                default:
+                    break;
+            }
+        }
+
         JLabel analiticas = new JLabel("Analíticas :");
-        analiticas.setBounds(50, 450, 100, 50);
+        analiticas.setBounds(350, 510, 100, 50);
+        panel.add(analiticas);
 
         JLabel tep = new JLabel();
         tep.setText("TEP :" + so.getTEP());
-        tep.setBounds(50, 470, 100, 50);
+        tep.setBounds(250, 540, 100, 50);
         panel.add(tep);
 
         JLabel ttp = new JLabel();
         ttp.setText("TTP :" + Double.toString(so.getTTP()));
-        ttp.setBounds(50 + 100, 470, 100, 50);
+        ttp.setBounds(250 + 100, 540, 100, 50);
         panel.add(ttp);
 
         JLabel pp = new JLabel();
-        pp.setText("PP :" + Double.toString(so.getPorcentajePromedio()));
-        pp.setBounds(50 + 100 * 2, 470, 100, 50);
+        pp.setText("TEP/TTP % :" + Double.toString(so.getPorcentajePromedio()) + "%");
+        pp.setBounds(250 + 100 * 2, 540, 200, 50);
         panel.add(pp);
 
     }
@@ -186,7 +232,7 @@ public class GUI implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (botonPaso.getText() != "Finalizar") {
+        if (!botonPaso.getText().equals("Finalizar")) {
             so.srtfPasoN();
             añadirSegundosGrafica();
             revisarTiemposDeLLegada();
@@ -220,17 +266,17 @@ public class GUI implements ActionListener {
 
             // Fill and draw outer rectangle
             g.setColor(Color.WHITE);
-            g.fillRect(50, 350, 384, 50);
+            g.fillRect(50, 350, rectangleWidth * 24, 50);
             g.setColor(Color.WHITE);
-            g.drawRect(50, 350, 384, 50);
+            g.drawRect(50, 350, rectangleWidth * 24, 50);
 
             // Fill and draw inner rectangles
             if (this.counter < 25) {
                 for (int i = 0; i < counter + 1; i++) {
                     g.setColor(Color.BLUE);
-                    g.fillRect(50 + i * 16, 350, 16, 50);
+                    g.fillRect(50 + i * rectangleWidth, 350, 34, 50);
                     g.setColor(Color.WHITE);
-                    g.drawRect(50 + i * 16, 350, 16, 50);
+                    g.drawRect(50 + i * rectangleWidth, 350, 34, 50);
                 }
             }
 
