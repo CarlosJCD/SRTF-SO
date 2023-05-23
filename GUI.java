@@ -1,18 +1,19 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
+//import javax.swing.border.Border;
+//import javax.swing.border.EmptyBorder;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GUI implements ActionListener {
 
     DrawingPanel panel;
     JFrame frame;
     ImageIcon imagenTablaProcesos;
-    int frameWidth = 800;
+    int frameWidth = 820;
     int frameHeight = 700;
     int rectangleWidth = 30;
     JLabel labelTitulo;
@@ -30,6 +31,11 @@ public class GUI implements ActionListener {
     JLabel proceso4;
     JLabel proceso5;
 
+    JTable tabla;
+    JScrollPane scrollPane;
+    List<Proceso> datosProceso;
+    Object[][] datos;
+
     public GUI(SistemaOperativo _so) {
 
         so = _so;
@@ -45,16 +51,40 @@ public class GUI implements ActionListener {
 
         // Añadimos el apartado de bienvenida
 
-        labelTitulo = new JLabel("Administración Del Procesador Utilizando El Algoritmo SRTF");
-        labelTitulo.setBounds(200, frameHeight / 20, 500, 50);
+        labelTitulo = new JLabel("Administración del Procesador utilizando el Algoritmo SRTF");
+        Font currentFont = labelTitulo.getFont();
+        labelTitulo.setFont(new Font(currentFont.getName(), Font.BOLD, 20));
+        labelTitulo.setBounds(96, frameHeight / 20, 700, 50);
         panel.add(labelTitulo);
 
-        // Añadimos la imagen de los procesos
+        // Añadimos la tabla de los procesos
 
-        imagenTablaProcesos = new ImageIcon(getClass().getResource("TablaProcesosSOProyectoFinal.png"));
-        imagen = new JLabel(imagenTablaProcesos);
-        imagen.setBounds(200, 50, 410, 300);
-        panel.add(imagen);
+        datosProceso = so.getProcesosAEjecutar();
+        
+        datos = new Object[datosProceso.size()][3];
+        for (int i = 0; i < datosProceso.size(); i++) {
+            Proceso proceso = datosProceso.get(i);
+            datos[i][0] = proceso.getId();
+            datos[i][1] = proceso.getLlegada();
+            datos[i][2] = proceso.getRafaga();
+        }
+
+        Object[] columnas = {"Proceso", "Tiempo de Llegada", "Tiempo de Ráfaga"};
+
+        tabla = new JTable(datos, columnas);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        for (int i=0; i<tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        ((DefaultTableCellRenderer)tabla.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
+        scrollPane = new JScrollPane(tabla);
+        scrollPane.setBounds(220, 90, 378, 200);
+        panel.add(scrollPane);
 
         // Añadimos el apartado que indica que sigue el diagrama de Gannt
 
@@ -62,11 +92,10 @@ public class GUI implements ActionListener {
         labelDiagramaGannt.setBounds(50, 300, 500, 50);
         panel.add(labelDiagramaGannt);
 
-        // Añadimos el botón para ir mostrando cómo se va rellenando el diagrama de
-        // Gannt
+        // Añadimos el botón para ir mostrando cómo se va rellenando el diagrama de Gannt
 
         botonPaso = new JButton("Paso n");
-        botonPaso.setBounds(350, 430, 90, 25);
+        botonPaso.setBounds(365, 450, 90, 25);
         botonPaso.addActionListener(this);
         panel.add(botonPaso);
 
@@ -106,8 +135,8 @@ public class GUI implements ActionListener {
         proceso5.setBounds(50 + rectangleWidth * 17, 350, 50, 50);
         proceso5.setForeground(Color.WHITE);
         panel.add(proceso5);
-        frame.setVisible(true);
 
+        frame.setVisible(true);
     }
 
     public void revisarTiemposDeLLegada() {
@@ -150,13 +179,13 @@ public class GUI implements ActionListener {
             panel.add(tiempo);
             botonPaso.setText("Paso " + Integer.toString(i));
         }
+
         if (so.getTiempo() == 23) {
             JLabel tiempo = new JLabel();
             tiempo.setText("24");
             tiempo.setBounds(50 + rectangleWidth * 24, 390, 100, 50);
             panel.add(tiempo);
         }
-
     }
 
     public void mostrarAnaliticas() {
@@ -165,38 +194,38 @@ public class GUI implements ActionListener {
         so.calcularAnaliticas();
 
         JLabel tiempoDeEsperaTitulo = new JLabel("Tiempos de espera por proceso:");
-        tiempoDeEsperaTitulo.setBounds(275, 450, 250, 50);
+        tiempoDeEsperaTitulo.setBounds(310, 475, 250, 50);
         panel.add(tiempoDeEsperaTitulo);
 
         for (Proceso proceso : so.getProcesosFinalizados()) {
             switch (proceso.getId()) {
                 case "P1":
                     JLabel p1Label = new JLabel();
-                    p1Label.setBounds(150, 480, 100, 50);
+                    p1Label.setBounds(185, 505, 100, 50);
                     panel.add(p1Label);
                     p1Label.setText("P1 = " + proceso.getTiempoDeEspera());
                     break;
                 case "P2":
                     JLabel p2Label = new JLabel();
-                    p2Label.setBounds(150 + 100, 480, 100, 50);
+                    p2Label.setBounds(185 + 100, 505, 100, 50);
                     panel.add(p2Label);
                     p2Label.setText("P2 = " + proceso.getTiempoDeEspera());
                     break;
                 case "P3":
                     JLabel p3Label = new JLabel();
-                    p3Label.setBounds(150 + 200, 480, 100, 50);
+                    p3Label.setBounds(185 + 200, 505, 100, 50);
                     panel.add(p3Label);
                     p3Label.setText("P3 = " + proceso.getTiempoDeEspera());
                     break;
                 case "P4":
                     JLabel p4Label = new JLabel();
-                    p4Label.setBounds(150 + 300, 480, 100, 50);
+                    p4Label.setBounds(185 + 300, 505, 100, 50);
                     panel.add(p4Label);
                     p4Label.setText("P4 = " + proceso.getTiempoDeEspera());
                     break;
                 case "P5":
                     JLabel p5Label = new JLabel();
-                    p5Label.setBounds(150 + 400, 480, 100, 50);
+                    p5Label.setBounds(185 + 400, 505, 100, 50);
                     panel.add(p5Label);
                     p5Label.setText("P5 = " + proceso.getTiempoDeEspera());
                     break;
@@ -205,23 +234,23 @@ public class GUI implements ActionListener {
             }
         }
 
-        JLabel analiticas = new JLabel("Analíticas :");
-        analiticas.setBounds(350, 510, 100, 50);
+        JLabel analiticas = new JLabel("Analíticas:");
+        analiticas.setBounds(378, 540, 100, 50);
         panel.add(analiticas);
 
         JLabel tep = new JLabel();
         tep.setText("TEP :" + so.getTEP());
-        tep.setBounds(250, 540, 100, 50);
+        tep.setBounds(255, 570, 100, 50);
         panel.add(tep);
 
         JLabel ttp = new JLabel();
         ttp.setText("TTP :" + Double.toString(so.getTTP()));
-        ttp.setBounds(250 + 100, 540, 100, 50);
+        ttp.setBounds(255 + 100, 570, 100, 50);
         panel.add(ttp);
 
         JLabel pp = new JLabel();
         pp.setText("TEP/TTP % :" + Double.toString(so.getPorcentajePromedio()) + "%");
-        pp.setBounds(250 + 100 * 2, 540, 200, 50);
+        pp.setBounds(255 + 100 * 2, 570, 200, 50);
         panel.add(pp);
 
     }
@@ -232,6 +261,7 @@ public class GUI implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         if (!botonPaso.getText().equals("Finalizar")) {
             so.srtfPasoN();
             añadirSegundosGrafica();
@@ -241,16 +271,15 @@ public class GUI implements ActionListener {
             control += so.getTiempo();
 
             if (control == 23) {
-
                 mostrarAnaliticas();
                 control += 1;
                 cambiarBotonAlFinalizar();
             }
             panel.repaint();
+
         } else {
             frame.dispose();
         }
-
     }
 
     class DrawingPanel extends JPanel {

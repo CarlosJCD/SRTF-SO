@@ -184,6 +184,10 @@ public class SistemaOperativo {
     public List<Proceso> getProcesosFinalizados() {
         return procesosFinalizados;
     }
+
+    public List<Proceso> getProcesosAEjecutar() {
+        return procesosAEjecutar;
+    }
 }
 
 /*
